@@ -1,0 +1,61 @@
+name: Snyk Security Scan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  snyk-scan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - cart
+          - media
+          - product
+          - order
+          - rating
+          - customer
+          - location
+          - inventory
+          - tax
+          - search
+          - payment
+          - payment-paypal
+          - promotion
+          - webhook
+          - recommendation
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build ${{ matrix.service }}
+        run: mvn clean install -DskipTests -pl ${{ matrix.service }} -am
+
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/maven@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: >-
+            --severity-threshold=high
+            --file=${{ matrix.service }}/pom.xml
+            --project-name=yas-${{ matrix.service }}
+
+      - name: Upload Snyk result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: snyk.sarif
