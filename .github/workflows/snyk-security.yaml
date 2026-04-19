@@ -13,6 +13,7 @@ jobs:
   snyk-scan:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         service:
           - cart
@@ -53,9 +54,11 @@ jobs:
             --severity-threshold=high
             --file=${{ matrix.service }}/pom.xml
             --project-name=yas-${{ matrix.service }}
+            --sarif-file-output=snyk.sarif
 
       - name: Upload Snyk result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         if: always()
+        continue-on-error: true
         with:
           sarif_file: snyk.sarif
