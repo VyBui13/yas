@@ -1,4 +1,4 @@
-name: inventory service ci
+﻿name: inventory service ci
 
 on:
   push:
@@ -44,21 +44,23 @@ jobs:
           name: Inventory-Service-Test-Results
           path: "inventory/**/*-reports/TEST*.xml"
           reporter: java-junit
-      - name: OWASP Dependency Check
+      - name: Run Snyk to check for vulnerabilities
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        uses: dependency-check/Dependency-Check_Action@main
+        uses: snyk/actions/maven@master
         env:
-          JAVA_HOME: /opt/jdk
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          project: 'yas'
-          path: '.'
-          format: 'HTML'
-      - name: Upload OWASP Dependency Check results
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        uses: actions/upload-artifact@master
+          args: >-
+            --severity-threshold=high
+            --file=inventory/pom.xml
+            --project-name=yas-inventory
+            --sarif-file-output=snyk.sarif
+      - name: Upload Snyk result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        continue-on-error: true
         with:
-          name: OWASP Dependency Check Report
-          path: ${{github.workspace}}/reports
+          sarif_file: snyk.sarif
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:

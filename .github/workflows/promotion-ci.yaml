@@ -1,4 +1,4 @@
-name: promotion service ci
+﻿name: promotion service ci
 
 on:
   push:
@@ -49,21 +49,23 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -f promotion
-      - name: OWASP Dependency Check
+      - name: Run Snyk to check for vulnerabilities
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        uses: dependency-check/Dependency-Check_Action@main
+        uses: snyk/actions/maven@master
         env:
-          JAVA_HOME: /opt/jdk
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          project: 'yas'
-          path: '.'
-          format: 'HTML'
-      - name: Upload OWASP Dependency Check results
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        uses: actions/upload-artifact@master
+          args: >-
+            --severity-threshold=high
+            --file=promotion/pom.xml
+            --project-name=yas-promotion
+            --sarif-file-output=snyk.sarif
+      - name: Upload Snyk result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        continue-on-error: true
         with:
-          name: OWASP Dependency Check Report
-          path: ${{github.workspace}}/reports
+          sarif_file: snyk.sarif
       - name: Add coverage report to PR
         uses: madrapps/jacoco-report@v1.6.1
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
