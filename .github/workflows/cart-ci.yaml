@@ -74,7 +74,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           rm -f cart/mvnw cart/mvnw.cmd
-          snyk test --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart -- -Drevision=1.0-SNAPSHOT
+          snyk test -d --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart -- -Drevision=1.0-SNAPSHOT
         
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
