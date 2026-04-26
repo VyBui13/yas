@@ -3,9 +3,42 @@ name: Snyk Security Scan
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'cart/**'
+      - 'media/**'
+      - 'product/**'
+      - 'order/**'
+      - 'rating/**'
+      - 'customer/**'
+      - 'location/**'
+      - 'inventory/**'
+      - 'tax/**'
+      - 'search/**'
+      - 'payment/**'
+      - 'payment-paypal/**'
+      - 'promotion/**'
+      - 'webhook/**'
+      - 'recommendation/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'cart/**'
+      - 'media/**'
+      - 'product/**'
+      - 'order/**'
+      - 'rating/**'
+      - 'customer/**'
+      - 'location/**'
+      - 'inventory/**'
+      - 'tax/**'
+      - 'search/**'
+      - 'payment/**'
+      - 'payment-paypal/**'
+      - 'promotion/**'
+      - 'webhook/**'
+      - 'recommendation/**'
   workflow_dispatch:
+  # Chạy scan định kỳ hàng ngày lúc nửa đêm UTC
   schedule:
     - cron: "0 0 * * *"
 
@@ -34,19 +67,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 25
+      # SỬA LỖI 3: Đổi Java 25 → Java 21 (LTS, chuẩn của dự án YAS)
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
 
       - name: Build ${{ matrix.service }}
         run: mvn clean install -DskipTests -pl ${{ matrix.service }} -am
 
+      # SỬA LỖI 1: Xóa continue-on-error để pipeline thực sự fail khi có lỗ hổng HIGH/CRITICAL
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/maven@master
-        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
