@@ -1,4 +1,4 @@
-name: sampledata service ci
+﻿name: sampledata service ci
 
 on:
   push:
@@ -42,21 +42,17 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -f sampledata
-      - name: OWASP Dependency Check
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/maven@master
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        uses: dependency-check/Dependency-Check_Action@main
         env:
-          JAVA_HOME: /opt/jdk
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          project: 'yas'
-          path: '.'
-          format: 'HTML'
-      - name: Upload OWASP Dependency Check results
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        uses: actions/upload-artifact@master
-        with:
-          name: OWASP Dependency Check Report
-          path: ${{github.workspace}}/reports
+          command: test
+          args: >-
+            --severity-threshold=high
+            --file=sampledata/pom.xml
+            --project-name=yas-sampledata
       - name: Log in to the Container registry
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/login-action@v3

@@ -45,20 +45,16 @@ jobs:
           path: "cart/**/*-reports/TEST*.xml"
           reporter: java-junit
       - name: Run Snyk to check for vulnerabilities
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         uses: snyk/actions/maven@master
-        continue-on-error: true
+        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-          JAVA_HOME: /opt/java/openjdk
         with:
-          args: --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart
-      - name: Upload Snyk result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        continue-on-error: true
-        with:
-          sarif_file: snyk.sarif
+          command: test
+          args: >-
+            --severity-threshold=high
+            --file=cart/pom.xml
+            --project-name=yas-cart
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
