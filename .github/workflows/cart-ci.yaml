@@ -63,14 +63,18 @@ jobs:
         uses: snyk/actions/setup@master
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
 
-      # BƯỚC 2: XÓA file mvnw cục bộ và chạy Snyk (Tuyệt chiêu mới)
-      - name: Run Snyk to check for vulnerabilities
+      # BƯỚC 1.5: (DEBUG) Chạy thử Maven Tree bằng tay để xem Maven có tự build được không
+      - name: Debug Maven Dependency Tree
+        run: mvn dependency:tree -pl cart -am
+
+      # BƯỚC 2: Chạy Snyk ở chế độ DEBUG (thêm cờ -d)
+      - name: Run Snyk to check for vulnerabilities (DEBUG MODE)
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           rm -f cart/mvnw cart/mvnw.cmd
-          snyk test --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart
+          snyk test -d --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart
         
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
