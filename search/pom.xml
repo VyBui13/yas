@@ -5,11 +5,11 @@
     <parent>
         <groupId>com.yas</groupId>
         <artifactId>yas</artifactId>
-        <version>${revision}</version>
+        <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>search</artifactId>
-    <version>${revision}</version>
+    <version>1.0-SNAPSHOT</version>
     <name>search</name>
     <description>Demo project for Spring Boot</description>
     <properties>
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>com.yas</groupId>
             <artifactId>common-library</artifactId>
-            <version>${revision}</version>
+            <version>1.0-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>com.yas</groupId>
             <artifactId>common-library</artifactId>
-            <version>${revision}</version>
+            <version>1.0-SNAPSHOT</version>
             <classifier>tests</classifier>
             <type>test-jar</type>
             <scope>test</scope>

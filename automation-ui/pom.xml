@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.yas</groupId>
     <artifactId>automation-ui</artifactId>
-    <version>${revision}</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>automation-ui</name>
     <description>YAS automation-ui test</description>
