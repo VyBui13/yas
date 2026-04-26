@@ -3,7 +3,6 @@ name: Snyk Security Scan
 on:
   push:
     branches: [ "main" ]
-    # FIX YC6 - Monorepo: Chi chay khi co thay doi trong thu muc service
     paths:
       - 'cart/**'
       - 'media/**'
@@ -22,7 +21,6 @@ on:
       - 'recommendation/**'
   pull_request:
     branches: [ "main" ]
-    # FIX YC6 - Monorepo: Chi chay khi co thay doi trong thu muc service
     paths:
       - 'cart/**'
       - 'media/**'
@@ -69,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # FIX YC3 - Java LTS: Doi tu java-version 25 sang 21 (LTS, chuan du an YAS)
+      
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -80,8 +78,7 @@ jobs:
       - name: Build ${{ matrix.service }}
         run: mvn clean install -DskipTests -pl ${{ matrix.service }} -am
 
-      # FIX YC3 - Xoa continue-on-error: true de pipeline that su FAIL khi phat hien lo hong HIGH/CRITICAL
-      # Truoc do: continue-on-error: true -> che giau loi, PR van duoc merge du co lo hong bao mat
+     
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/maven@master
         env:
@@ -93,7 +90,7 @@ jobs:
             --project-name=yas-${{ matrix.service }}
             --sarif-file-output=snyk.sarif
 
-      # Buoc nay chi upload ket qua len tab Security, khong anh huong viec block PR
+      
       - name: Upload Snyk result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
         if: always()
