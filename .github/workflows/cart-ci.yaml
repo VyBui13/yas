@@ -67,10 +67,7 @@ jobs:
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: |
-          cd cart
-          chmod +x mvnw
-          snyk test --severity-threshold=high --file=pom.xml --project-name=yas-cart
+        run: snyk test --severity-threshold=high --file=pom.xml --project-name=yas-cart -- -pl cart
         
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
