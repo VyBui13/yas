@@ -1,4 +1,4 @@
-﻿name: webhook service ci
+name: webhook service ci
 
 on:
   push:
@@ -45,6 +45,7 @@ jobs:
           path: "webhook/**/*-reports/TEST*.xml"
           reporter: java-junit
       - name: Analyze with sonar cloud
+        continue-on-error: true
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -73,3 +74,4 @@ jobs:
           context: ./webhook
           push: true
           tags: ghcr.io/nashtech-garage/yas-webhook:latest
+

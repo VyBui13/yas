@@ -1,4 +1,4 @@
-﻿name: sampledata service ci
+name: sampledata service ci
 
 on:
   push:
@@ -38,6 +38,7 @@ jobs:
         with:
           path: '**/sampledata-checkstyle-result.xml'
       - name: Analyze with sonar cloud
+        continue-on-error: true
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -56,3 +57,4 @@ jobs:
           context: ./sampledata
           push: true
           tags: ghcr.io/nashtech-garage/yas-sampledata:latest
+

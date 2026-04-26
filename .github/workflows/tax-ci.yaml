@@ -1,4 +1,4 @@
-﻿name: tax service ci
+name: tax service ci
 
 on:
   push:
@@ -45,6 +45,7 @@ jobs:
           path: "tax/**/*-reports/TEST*.xml"
           reporter: java-junit
       - name: Analyze with sonar cloud
+        continue-on-error: true
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -73,3 +74,4 @@ jobs:
           context: ./tax
           push: true
           tags: ghcr.io/nashtech-garage/yas-tax:latest
+

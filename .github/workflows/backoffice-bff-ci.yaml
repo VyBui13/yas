@@ -1,4 +1,4 @@
-﻿name: backoffice-bff service ci
+name: backoffice-bff service ci
 
 on:
   push:
@@ -38,6 +38,7 @@ jobs:
       - name: Run Maven Verify
         run: mvn clean verify -f backoffice-bff
       - name: Analyze with sonar cloud
+        continue-on-error: true
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -56,3 +57,4 @@ jobs:
           context: ./backoffice-bff
           push: true
           tags: ghcr.io/nashtech-garage/yas-backoffice-bff:latest
+

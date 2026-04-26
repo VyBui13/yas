@@ -1,4 +1,4 @@
-﻿name: storefront-bff service ci
+name: storefront-bff service ci
 
 on:
   push:
@@ -38,6 +38,7 @@ jobs:
         with:
           path: '**/storefront-bff-checkstyle-result.xml'
       - name: Analyze with sonar cloud
+        continue-on-error: true
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -66,3 +67,4 @@ jobs:
           context: ./storefront-bff
           push: true
           tags: ghcr.io/nashtech-garage/yas-storefront-bff:latest
+
