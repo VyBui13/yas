@@ -44,21 +44,31 @@ jobs:
           name: Cart-Service-Unit-Test-Results
           path: "cart/**/*-reports/TEST*.xml"
           reporter: java-junit
-      - name: OWASP Dependency Check
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        uses: dependency-check/Dependency-Check_Action@main
+      # - name: OWASP Dependency Check
+      #   if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
+      #   uses: dependency-check/Dependency-Check_Action@main
+      #   env:
+      #     JAVA_HOME: /opt/jdk
+      #   with:
+      #     project: 'yas'
+      #     path: '.'
+      #     format: 'HTML'
+      # - name: Upload OWASP Dependency Check results
+      #   if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
+      #   uses: actions/upload-artifact@master
+      #   with:
+      #     name: OWASP Dependency Check Report
+      #     path: ${{github.workspace}}/reports
+      - name: Setup Snyk CLI
+        uses: snyk/actions/setup@master
+      
+      - name: Run Snyk to check for vulnerabilities
         env:
-          JAVA_HOME: /opt/jdk
-        with:
-          project: 'yas'
-          path: '.'
-          format: 'HTML'
-      - name: Upload OWASP Dependency Check results
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        uses: actions/upload-artifact@master
-        with:
-          name: OWASP Dependency Check Report
-          path: ${{github.workspace}}/reports
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          mvn -B -ntp clean install -Drevision=1.0-SNAPSHOT
+          snyk test --all-projects --severity-threshold=high
+          
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
