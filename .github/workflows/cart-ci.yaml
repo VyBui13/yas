@@ -68,13 +68,13 @@ jobs:
         run: mvn dependency:tree -pl cart -am
 
       # BƯỚC 2: Chạy Snyk ở chế độ DEBUG (thêm cờ -d)
-      - name: Run Snyk to check for vulnerabilities (DEBUG MODE)
+      - name: Run Snyk to check for vulnerabilities
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           rm -f cart/mvnw cart/mvnw.cmd
-          snyk test -d --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart
+          snyk test --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart -- -Drevision=1.0-SNAPSHOT
         
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
