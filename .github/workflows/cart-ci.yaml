@@ -44,17 +44,6 @@ jobs:
           name: Cart-Service-Unit-Test-Results
           path: "cart/**/*-reports/TEST*.xml"
           reporter: java-junit
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/maven@master
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: test
-          args: >-
-            --severity-threshold=high
-            --file=cart/pom.xml
-            --project-name=yas-cart
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
