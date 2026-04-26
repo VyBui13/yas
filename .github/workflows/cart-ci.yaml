@@ -68,8 +68,9 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          chmod +x cart/mvnw
-          snyk test --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart
+          cd cart
+          chmod +x mvnw
+          snyk test --severity-threshold=high --file=pom.xml --project-name=yas-cart
         
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
