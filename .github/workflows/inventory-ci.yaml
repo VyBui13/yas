@@ -48,7 +48,8 @@ jobs:
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         run: |
           npm install -g snyk
-          snyk test --severity-threshold=high --file=inventory/pom.xml --project-name=yas-inventory --sarif-output=snyk.sarif
+          export JAVA_HOME=$JAVA_HOME_21_X64
+          snyk test --severity-threshold=high --file=inventory/pom.xml --project-name=yas-inventory --sarif-file-output=snyk.sarif
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: Upload Snyk result to GitHub Code Scanning
