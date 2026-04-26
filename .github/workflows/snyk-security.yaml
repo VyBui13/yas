@@ -19,7 +19,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Setup Java 21 (đúng với yêu cầu đồ án - không dùng Java 25)
+      
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
