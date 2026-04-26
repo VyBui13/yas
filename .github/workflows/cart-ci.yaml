@@ -63,15 +63,15 @@ jobs:
       - name: Setup Snyk CLI
         uses: snyk/actions/setup@master
       
-      - name: Build all modules (important for multi-module)
-        run: mvn clean install -DskipTests
+      - name: Build required modules
+        run: mvn clean install -pl cart -am -DskipTests
       
-      - name: Run Snyk test
+      - name: Run Snyk test (cart only)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           snyk auth $SNYK_TOKEN
-          snyk test --maven-aggregate-project --severity-threshold=high
+          snyk test -d --file=cart/pom.xml --severity-threshold=high
       
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
