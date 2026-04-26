@@ -59,6 +59,10 @@ jobs:
       #   with:
       #     name: OWASP Dependency Check Report
       #     path: ${{github.workspace}}/reports
+
+      - name: Build all modules
+        run: mvn clean install -DskipTests
+        
       - name: Setup Snyk CLI
         uses: snyk/actions/setup@master
       
