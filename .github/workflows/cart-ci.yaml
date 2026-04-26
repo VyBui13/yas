@@ -59,17 +59,15 @@ jobs:
       #   with:
       #     name: OWASP Dependency Check Report
       #     path: ${{github.workspace}}/reports
+      - name: Setup Snyk CLI
+        uses: snyk/actions/setup@master
+        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
+
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/maven@master
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: test
-          args: >-
-            --severity-threshold=high
-            --file=cart/pom.xml
-            --project-name=yas-cart
+        run: snyk test --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
