@@ -62,20 +62,24 @@ jobs:
 
       - name: Setup Snyk CLI
         uses: snyk/actions/setup@master
-        
+      
       - name: Setup permission
         run: chmod +x ./cart/mvnw
-  
       
-      - name: Build cart with dependencies
-        run: mvn clean install -pl cart -am -DskipTests -Drevision=1.0-SNAPSHOT
+      # 🔥 Build toàn bộ project (đảm bảo dependency resolve OK)
+      - name: Build project
+        run: mvn clean install -DskipTests -Drevision=1.0-SNAPSHOT
       
+      # 🔥 Run Snyk
       - name: Run Snyk test (cart only)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           snyk auth $SNYK_TOKEN
-          snyk test -d --org=vybui13 --file=cart/pom.xml --severity-threshold=high
+          snyk test \
+            --org=2a7b6711-88f9-4fd5-ac1d-ebebab8294ac \
+            --file=cart/pom.xml \
+            --severity-threshold=high
       
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
