@@ -70,7 +70,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           snyk auth $SNYK_TOKEN
-          snyk test --file=cart/pom.xml --severity-threshold=high
+          snyk test -d --file=cart/pom.xml --severity-threshold=high
       
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
