@@ -68,7 +68,6 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          chmod +x mvnw
           chmod +x cart/mvnw
           snyk test --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart
         
