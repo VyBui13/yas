@@ -44,12 +44,11 @@ jobs:
           name: Cart-Service-Unit-Test-Results
           path: "cart/**/*-reports/TEST*.xml"
           reporter: java-junit
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
       - name: Run Snyk to check for vulnerabilities
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        run: |
-          npm install -g snyk
-          export JAVA_HOME=$JAVA_HOME_21_X64
-          snyk test --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart --sarif-file-output=snyk.sarif
+        run: snyk test --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart --sarif-file-output=snyk.sarif
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: Upload Snyk result to GitHub Code Scanning

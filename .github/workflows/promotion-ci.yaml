@@ -49,12 +49,11 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -f promotion
+      - name: Install Snyk CLI
+        uses: snyk/actions/setup@master
       - name: Run Snyk to check for vulnerabilities
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
-        run: |
-          npm install -g snyk
-          export JAVA_HOME=$JAVA_HOME_21_X64
-          snyk test --severity-threshold=high --file=promotion/pom.xml --project-name=yas-promotion --sarif-file-output=snyk.sarif
+        run: snyk test --severity-threshold=high --file=promotion/pom.xml --project-name=yas-promotion --sarif-file-output=snyk.sarif
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: Upload Snyk result to GitHub Code Scanning
