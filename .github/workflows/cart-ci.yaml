@@ -63,11 +63,14 @@ jobs:
         uses: snyk/actions/setup@master
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
 
+      # BƯỚC 2: XÓA file mvnw cục bộ và chạy Snyk (Tuyệt chiêu mới)
       - name: Run Snyk to check for vulnerabilities
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk test --severity-threshold=high --file=pom.xml --project-name=yas-cart -- -pl cart
+        run: |
+          rm -f cart/mvnw cart/mvnw.cmd
+          snyk test --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart
         
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
