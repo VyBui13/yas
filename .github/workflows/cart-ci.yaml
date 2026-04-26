@@ -60,20 +60,18 @@ jobs:
       #     name: OWASP Dependency Check Report
       #     path: ${{github.workspace}}/reports
 
-      - name: Build all modules
-        run: mvn clean install -DskipTests
-        
       - name: Setup Snyk CLI
         uses: snyk/actions/setup@master
       
-      - name: Grant execute permission for mvnw
-        run: chmod +x ./cart/mvnw
+      - name: Build required modules
+        run: mvn clean install -pl cart -am -DskipTests
       
       - name: Run Snyk test (cart only)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          snyk test -d --file=cart/pom.xml --severity-threshold=high -- -Drevision=1.0-SNAPSHOT
+          snyk auth $SNYK_TOKEN
+          snyk test --file=cart/pom.xml --severity-threshold=high
       
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
