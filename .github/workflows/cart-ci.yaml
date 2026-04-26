@@ -56,13 +56,17 @@ jobs:
 
       # ================= SNYK =================
       - name: Setup Snyk CLI
-        uses: snyk/actions/setup@v3
+        uses: snyk/actions/setup@master
 
       - name: Authenticate Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
       - name: Run Snyk test (cart only)
-        run: snyk test --file=cart/pom.xml --severity-threshold=high --all-projects=false
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          snyk auth $SNYK_TOKEN
+          snyk test --file=cart/pom.xml --severity-threshold=high
 
       # 👉 OPTIONAL: nếu muốn scan full monorepo
       # - name: Run Snyk test (all modules)
