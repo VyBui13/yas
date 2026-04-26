@@ -62,6 +62,10 @@ jobs:
 
       - name: Setup Snyk CLI
         uses: snyk/actions/setup@master
+        
+      - name: Setup permission
+        run: chmod +x ./cart/mvnw
+  
       
       - name: Build cart with dependencies
         run: mvn clean install -pl cart -am -DskipTests -Drevision=1.0-SNAPSHOT
@@ -71,7 +75,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           snyk auth $SNYK_TOKEN
-          snyk test -d --file=cart/pom.xml --severity-threshold=high
+          snyk test -d --org=vybui13 --file=cart/pom.xml --severity-threshold=high
       
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
