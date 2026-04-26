@@ -1,7 +1,7 @@
 name: Snyk Security Scan
 
-# Trigger khi có push hoặc PR vào main
-# Không dùng "paths:" để quét TOÀN BỘ repo (đúng yêu cầu đồ án II.7.c)
+# Trigger khi có push hoặc PR vào main.
+# KHÔNG dùng "paths:" vì đây là security scan → quét toàn bộ repo (đúng yêu cầu II.7.c)
 on:
   push:
     branches: [ "main" ]
@@ -12,14 +12,12 @@ on:
 jobs:
   security:
     runs-on: ubuntu-latest
-    env:
-      FROM_ORIGINAL_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main' }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      
+      # Java 21 đúng với yêu cầu đồ án (không dùng Java 25)
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -27,18 +25,15 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Chạy Snyk từ ROOT pom.xml → giải quyết được biến ${revision}
-      # Không có continue-on-error → đúng yêu cầu II.3 (CI must pass to merge)
-      # Không dùng --file=cart/pom.xml riêng lẻ → tránh lỗi exit code -13
+      # Chạy Snyk từ ROOT → giải quyết biến ${revision} trong pom.xml con
+      # --all-projects: Snyk tự tìm và quét tất cả module con
+      # KHÔNG có continue-on-error → đúng yêu cầu II.3 (CI fail nếu có lỗ hổng HIGH)
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/maven@master
-        if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           command: test
           args: >-
             --severity-threshold=high
-            --file=pom.xml
             --all-projects
-            --project-name=yas
