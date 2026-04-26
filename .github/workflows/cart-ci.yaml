@@ -61,16 +61,15 @@ jobs:
       #     path: ${{github.workspace}}/reports
       - name: Setup Snyk CLI
         uses: snyk/actions/setup@master
-
-      - name: Authenticate Snyk
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-
+      
+      - name: Grant execute permission for mvnw
+        run: chmod +x ./mvnw
+      
       - name: Run Snyk test (cart only)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          snyk auth $SNYK_TOKEN
-          snyk test -d --file=cart/pom.xml --severity-threshold=high
+          snyk test --file=cart/pom.xml --severity-threshold=high
       
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
