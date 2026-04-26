@@ -72,9 +72,10 @@ jobs:
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          MAVEN_OPTS: "-Drevision=1.0-SNAPSHOT" 
         run: |
           rm -f cart/mvnw cart/mvnw.cmd
-          snyk test -d --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart -- -Drevision=1.0-SNAPSHOT
+          snyk test -d --severity-threshold=high --file=cart/pom.xml --project-name=yas-cart
         
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
