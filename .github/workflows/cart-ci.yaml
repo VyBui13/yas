@@ -66,17 +66,15 @@ jobs:
       - name: Setup permission
         run: chmod +x ./cart/mvnw
       
-      # 🔥 Build toàn bộ project (đảm bảo dependency resolve OK)
       - name: Build project
         run: mvn clean install -DskipTests -Drevision=1.0-SNAPSHOT
       
-      # 🔥 Run Snyk
       - name: Run Snyk test (cart only)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
           snyk auth $SNYK_TOKEN
-          snyk test \
+          snyk test -d \
             --org=2a7b6711-88f9-4fd5-ac1d-ebebab8294ac \
             --file=cart/pom.xml \
             --severity-threshold=high
