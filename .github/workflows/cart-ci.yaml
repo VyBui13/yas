@@ -63,13 +63,13 @@ jobs:
         uses: snyk/actions/setup@master
       
       - name: Grant execute permission for mvnw
-        run: chmod +x ./mvnw
+        run: chmod +x ./cart/mvnw
       
       - name: Run Snyk test (cart only)
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          snyk test --file=cart/pom.xml --severity-threshold=high
+          snyk test -d --file=cart/pom.xml --severity-threshold=high
       
       - name: Analyze with sonar cloud
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
