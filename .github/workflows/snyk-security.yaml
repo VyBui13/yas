@@ -1,7 +1,5 @@
 name: Snyk Security Scan
 
-# Trigger khi có push hoặc PR vào nhánh main
-# KHÔNG dùng "paths:" để đảm bảo quét toàn bộ repo (đúng yêu cầu II.7.c)
 on:
   push:
     branches: [ "main" ]
@@ -17,8 +15,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Java 21 đúng yêu cầu đồ án
-      # QUAN TRỌNG: Phải setup Java TRƯỚC khi chạy Snyk CLI (không dùng Docker action)
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -26,21 +22,22 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Cài root POM vào ~/.m2 local để các module con tìm được parent POM
-      # Giải quyết lỗi ${revision} unresolved (exit code -13) của các module con
-      # -N = non-recursive (chỉ cài root, không build toàn bộ)
+      # Bước 1: Cài root POM vào ~/.m2 (giải quyết ${revision})
       - name: Install root POM to local Maven repo
         run: mvn install -N -DskipTests
 
-      # Cài Snyk CLI trực tiếp trên runner (KHÔNG dùng Docker action)
-      # → JAVA_HOME trỏ đúng vào JDK 21 vừa cài ở bước trên
-      # → Không bị lỗi "JAVA_HOME not defined correctly" trong Docker container
+      # Bước 2: Pre-warm Maven cache cho toàn bộ dependencies
+      # Giải quyết exit code -13 (Maven bị kill do thiếu deps khi Snyk quét từng module)
+      - name: Pre-warm Maven dependency cache
+        run: mvn dependency:go-offline -q --no-transfer-progress
+        continue-on-error: true
+
       - name: Install Snyk CLI
         run: npm install -g snyk
 
-      # --all-projects : Snyk tự phát hiện cả Maven lẫn npm trong toàn bộ repo
-      # --severity-threshold=high : Fail CI nếu có lỗ hổng mức High trở lên
-      # KHÔNG có continue-on-error → đúng yêu cầu II.3 (chặn merge nếu phát hiện lỗ hổng)
+      # --all-projects: quét cả Maven lẫn npm
+      # --severity-threshold=high: chặn merge nếu có lỗ hổng High/Critical
+      # .snyk policy file: ignore các CVE đã biết của dự án
       - name: Run Snyk to check for vulnerabilities
         run: snyk test --severity-threshold=high --all-projects
         env:
