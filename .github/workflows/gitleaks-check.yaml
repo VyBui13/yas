@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-  workflow_dispatch: # Giữ lại cái này để thích thì bấm chạy bằng tay cũng được
+  workflow_dispatch:
 
 jobs:
   check:
