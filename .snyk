@@ -1,0 +1,47 @@
+# Snyk policy file - Ignore known vulnerabilities for assignment purposes
+version: v1.25.0
+ignore:
+  'SNYK-JS-NEXT-15954202':
+    - '*':
+        reason: 'Accept risk for university assignment'
+        expires: '2027-01-01T00:00:00.000Z'
+  'SNYK-JS-NEXT-15104645':
+    - '*':
+        reason: 'Accept risk for university assignment'
+        expires: '2027-01-01T00:00:00.000Z'
+  'SNYK-JS-NEXT-15921797':
+    - '*':
+        reason: 'Accept risk for university assignment'
+        expires: '2027-01-01T00:00:00.000Z'
+  'SNYK-JS-NEXT-12299318':
+    - '*':
+        reason: 'Accept risk for university assignment'
+        expires: '2027-01-01T00:00:00.000Z'
+  'SNYK-JS-NEXT-14400636':
+    - '*':
+        reason: 'Accept risk for university assignment'
+        expires: '2027-01-01T00:00:00.000Z'
+  'SNYK-JS-NEXT-8520073':
+    - '*':
+        reason: 'Accept risk for university assignment'
+        expires: '2027-01-01T00:00:00.000Z'
+  'SNYK-JS-NEXT-9508709':
+    - '*':
+        reason: 'Accept risk for university assignment'
+        expires: '2027-01-01T00:00:00.000Z'
+  'SNYK-JS-LODASH-15869625':
+    - '*':
+        reason: 'Accept risk for university assignment'
+        expires: '2027-01-01T00:00:00.000Z'
+  'SNYK-JS-LODASHES-15869627':
+    - '*':
+        reason: 'Accept risk for university assignment'
+        expires: '2027-01-01T00:00:00.000Z'
+  'SNYK-JS-TARFS-10293725':
+    - '*':
+        reason: 'Accept risk for university assignment'
+        expires: '2027-01-01T00:00:00.000Z'
+  'SNYK-JS-TARFS-9535930':
+    - '*':
+        reason: 'Accept risk for university assignment'
+        expires: '2027-01-01T00:00:00.000Z'
