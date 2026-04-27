@@ -22,23 +22,19 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Bước 1: Cài root POM vào ~/.m2 (giải quyết ${revision})
-      - name: Install root POM to local Maven repo
-        run: mvn install -N -DskipTests
-
-      # Bước 2: Pre-warm Maven cache cho toàn bộ dependencies
-      # Giải quyết exit code -13 (Maven bị kill do thiếu deps khi Snyk quét từng module)
-      - name: Pre-warm Maven dependency cache
-        run: mvn dependency:go-offline -q --no-transfer-progress
-        continue-on-error: true
+      # Build toàn bộ project để cài TẤT CẢ modules vào ~/.m2
+      # Giải quyết triệt để: ${revision}, common-library dependency, exit code -13
+      # -DskipTests: không chạy test (chỉ cần build để Snyk đọc dependency tree)
+      - name: Build all modules
+        run: mvn install -DskipTests --no-transfer-progress
 
       - name: Install Snyk CLI
         run: npm install -g snyk
 
       # --all-projects: quét cả Maven lẫn npm
       # --severity-threshold=high: chặn merge nếu có lỗ hổng High/Critical
-      # .snyk policy file: ignore các CVE đã biết của dự án
+      # --policy-path=. : ÉP Snyk dùng file .snyk ở ROOT cho TẤT CẢ sub-projects
       - name: Run Snyk to check for vulnerabilities
-        run: snyk test --severity-threshold=high --all-projects
+        run: snyk test --severity-threshold=high --all-projects --policy-path=.
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
