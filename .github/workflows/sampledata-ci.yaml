@@ -36,7 +36,16 @@ jobs:
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         uses: jwgmeligmeyling/checkstyle-github-action@master
         with:
-          path: '**/sampledata-checkstyle-result.xml'
+          path: "**/sampledata-checkstyle-result.xml"
+      - name: Upload Test and Coverage Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Sampledata-Service-Reports
+          path: |
+            **/target/surefire-reports/
+            **/target/site/jacoco/
+          retention-days: 7
       - name: Analyze with sonar cloud
         continue-on-error: true
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
@@ -56,5 +65,4 @@ jobs:
         with:
           context: ./sampledata
           push: true
-          tags: ghcr.io/nashtech-garage/yas-sampledata:latest
-
+          tags: ghcr.io/vybui13/yas-sampledata:latest
