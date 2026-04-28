@@ -21,6 +21,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -82,6 +83,19 @@ class PaymentServiceTest {
         verifyOrderServiceInteractions(capturedPayment);
         verifyResult(capturedPayment, capturePaymentResponseVm);
     }
+
+    @Test
+    void initPayment_UnsupportedMethod_ShouldThrowException() {
+        InitPaymentRequestVm request = InitPaymentRequestVm.builder()
+                .paymentMethod("UNKNOWN_METHOD") // Phương thức không có trong handler
+                .totalPrice(BigDecimal.TEN)
+                .build();
+            
+    // Kiểm tra xem nó có throw exception không (tùy vào logic code của bạn)
+    assertThrows(com.yas.commonlibrary.exception.BadRequestException.class, () -> {
+        paymentService.initPayment(request);
+    });
+}
 
     private CapturedPayment prepareCapturedPayment() {
         return CapturedPayment.builder()
