@@ -87,15 +87,15 @@ class PaymentServiceTest {
     @Test
     void initPayment_UnsupportedMethod_ShouldThrowException() {
         InitPaymentRequestVm request = InitPaymentRequestVm.builder()
-                .paymentMethod("UNKNOWN_METHOD") // Phương thức không có trong handler
+                .paymentMethod("UNKNOWN_METHOD")
                 .totalPrice(BigDecimal.TEN)
                 .build();
-            
-    // Kiểm tra xem nó có throw exception không (tùy vào logic code của bạn)
-    assertThrows(com.yas.commonlibrary.exception.BadRequestException.class, () -> {
-        paymentService.initPayment(request);
-    });
-}
+                
+        // Đổi từ BadRequestException sang IllegalArgumentException
+        assertThrows(IllegalArgumentException.class, () -> {
+            paymentService.initPayment(request);
+        });
+    }
 
     private CapturedPayment prepareCapturedPayment() {
         return CapturedPayment.builder()
