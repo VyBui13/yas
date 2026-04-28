@@ -36,7 +36,7 @@ jobs:
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         uses: jwgmeligmeyling/checkstyle-github-action@master
         with:
-          path: '**/payment-checkstyle-result.xml'
+          path: "**/payment-checkstyle-result.xml"
       - name: Test Results
         uses: dorny/test-reporter@v1
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' && (success() || failure()) }}
@@ -58,7 +58,7 @@ jobs:
           token: ${{secrets.GITHUB_TOKEN}}
           min-coverage-overall: 80
           min-coverage-changed-files: 60
-          title: 'Payment Coverage Report'
+          title: "Payment Coverage Report"
           update-comment: true
       - name: Log in to the Container registry
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -73,5 +73,4 @@ jobs:
         with:
           context: ./payment
           push: true
-          tags: ghcr.io/nashtech-garage/yas-payment:latest
-
+          tags: ghcr.io/vybui13/yas-payment:latest

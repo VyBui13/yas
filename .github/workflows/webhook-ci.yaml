@@ -36,7 +36,7 @@ jobs:
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         uses: jwgmeligmeyling/checkstyle-github-action@master
         with:
-          path: '**/webhook-checkstyle-result.xml'
+          path: "**/webhook-checkstyle-result.xml"
       - name: Unit Test Results
         uses: dorny/test-reporter@v1
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' && (success() || failure()) }}
@@ -58,7 +58,7 @@ jobs:
           token: ${{secrets.GITHUB_TOKEN}}
           min-coverage-overall: 80
           min-coverage-changed-files: 60
-          title: 'Webhook Coverage Report'
+          title: "Webhook Coverage Report"
           update-comment: true
       - name: Log in to the Container registry
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -73,5 +73,4 @@ jobs:
         with:
           context: ./webhook
           push: true
-          tags: ghcr.io/nashtech-garage/yas-webhook:latest
-
+          tags: ghcr.io/vybui13/yas-webhook:latest
