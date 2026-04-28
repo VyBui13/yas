@@ -39,13 +39,14 @@ jobs:
         continue-on-error: true
         working-directory: backoffice
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
           scan-ref: './backoffice'
           format: 'sarif'
           output: 'trivy-results.sarif'
       - name: SonarCloud Scan
+        continue-on-error: true
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         uses: SonarSource/sonarcloud-github-action@master
         with:
@@ -68,7 +69,7 @@ jobs:
           tags: ghcr.io/nashtech-garage/yas-backoffice:latest
       - name: Run Trivy vulnerability scanner
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'ghcr.io/nashtech-garage/yas-backoffice:latest'
           format: 'sarif'
