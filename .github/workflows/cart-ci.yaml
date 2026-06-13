@@ -107,13 +107,16 @@ jobs:
       - name: Deploy Config and Cart to Azure K3s
         if: ${{ github.ref == 'refs/heads/feature/test-cd-cart' }}
         run: |
-          # 1. Update dependency cho cart
-          helm dependency update ./k8s/charts/cart
+          # 1. Update dependency cho Config trước
+          helm dependency update ./k8s/charts/yas-configuration
           
-          # 2. Deploy cấu hình chung trước
+          # 2. Deploy cấu hình chung
           helm upgrade --install yas-config ./k8s/charts/yas-configuration --namespace yas
           
-          # 3. Deploy Cart service
+          # 3. Update dependency cho Cart
+          helm dependency update ./k8s/charts/cart
+          
+          # 4. Deploy Cart service
           helm upgrade --install cart ./k8s/charts/cart \
             --namespace yas \
             --set image.repository=${{ secrets.DOCKER_USERNAME }}/yas-cart \
