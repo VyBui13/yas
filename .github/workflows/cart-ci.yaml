@@ -107,6 +107,10 @@ jobs:
       - name: Deploy to Azure K3s using Helm
         if: ${{ github.ref == 'refs/heads/feature/test-cd-cart' }}
         run: |
+          # 1. Kéo các dependency (như chart backend) về trước khi cài đặt
+          helm dependency update ./k8s/charts/cart
+          
+          # 2. Thực thi lệnh cài đặt/cập nhật ứng dụng
           helm upgrade --install cart ./k8s/charts/cart \
             --namespace yas \
             --set image.repository=${{ secrets.DOCKER_USERNAME }}/yas-cart \
