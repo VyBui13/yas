@@ -1,6 +1,8 @@
 name: Deploy PostgreSQL Database
 
 on:
+  push:
+    branches: ["feature/test-cd-cart"]
   workflow_dispatch: 
 
 jobs:
