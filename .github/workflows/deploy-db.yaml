@@ -1,0 +1,25 @@
+name: Deploy PostgreSQL Database
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  deploy-database:
+    name: Deploy Postgres to Azure K3s
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Deploy PostgreSQL using Helm
+        run: |
+          helm dependency update ./k8s/deploy/postgres/postgresql
+          
+          helm upgrade --install postgres ./k8s/deploy/postgres/postgresql --namespace yas
