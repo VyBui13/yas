@@ -20,8 +20,17 @@ jobs:
           echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
           chmod 600 ~/.kube/config
 
-      - name: Deploy PostgreSQL using Helm
+      - name: Deploy PostgreSQL Operator and Database using Helm
         run: |
-          helm dependency update ./k8s/deploy/postgres/postgresql
+          # 1. Add Zalando Helm Repository
+          helm repo add postgres-operator-charts https://opensource.zalando.com/postgres-operator/charts/postgres-operator
+          helm repo update
           
-          helm upgrade --install postgres ./k8s/deploy/postgres/postgresql --namespace yas
+          # 2. Install PostgreSQL Operator
+          helm upgrade --install postgres-operator postgres-operator-charts/postgres-operator \
+            --create-namespace --namespace postgres
+          
+          # 3. Deploy PostgreSQL Cluster
+          helm dependency update ./k8s/deploy/postgres/postgresql
+          helm upgrade --install postgres ./k8s/deploy/postgres/postgresql \
+            --create-namespace --namespace postgres
