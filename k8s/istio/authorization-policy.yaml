@@ -6,11 +6,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: cart
+      app.kubernetes.io/name: cart
   action: ALLOW
   rules:
   - from:
     - source:
         principals: 
-        - "cluster.local/ns/yas/sa/storefront-bff"
+        - "cluster.local/ns/yas/sa/product"
         - "cluster.local/ns/yas/sa/backoffice-bff"
