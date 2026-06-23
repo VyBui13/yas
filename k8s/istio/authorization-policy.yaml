@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: cart
+      app.kubernetes.io/name: cart
   action: ALLOW
   rules:
   - from:

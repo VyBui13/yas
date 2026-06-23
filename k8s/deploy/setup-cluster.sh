@@ -36,12 +36,18 @@ pg_admin_hostname="pgadmin.$DOMAIN" yq -i '.hostname=env(pg_admin_hostname)' ./p
 helm upgrade --install pgadmin ./postgres/pgadmin \
 --create-namespace --namespace postgres \
 
+# Delete conflicting old Strimzi CRDs to avoid API compatibility errors (storedVersions)
+kubectl delete crd -l app=strimzi || true
+
 #Install strimzi-kafka-operator
 helm upgrade --install kafka-operator strimzi/strimzi-kafka-operator \
 --create-namespace --namespace kafka
 
 echo "Waiting 30 seconds for Kafka CRDs to be registered..."
 sleep 30
+# Apply Strimzi CRDs manually using server-side apply to avoid patch size validation errors
+kubectl apply --server-side -f https://github.com/strimzi/strimzi-kafka-operator/releases/download/0.41.0/strimzi-crds-0.41.0.yaml --force-conflicts || true
+rm -rf ~/.kube/cache/discovery
 
 #Install kafka and postgresql connector
 helm upgrade --install kafka-cluster ./kafka/kafka-cluster \
@@ -68,6 +74,8 @@ helm upgrade --install elasticsearch-cluster ./elasticsearch/elasticsearch-clust
 --set kibana.ingress.hostname="kibana.$DOMAIN"
 
 #Install loki
+kubectl delete clusterrole loki-clusterrole || true
+kubectl delete clusterrolebinding loki-clusterrolebinding || true
 helm upgrade --install loki grafana/loki \
  --create-namespace --namespace observability \
  -f ./observability/loki.values.yaml \
