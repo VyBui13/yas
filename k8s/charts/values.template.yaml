@@ -3,9 +3,9 @@ backend:
     repository: ghcr.io/vybui13/yas-{{service}}
     tag: latest
 
-  nameOverride: { { service } }
-  fullnameOverride: { { service } }
-  databaseName: { { service } }
+  nameOverride: {{service}}
+  fullnameOverride: {{service}}
+  databaseName: {{service}}
 
   ingress:
     enabled: true
