@@ -40,6 +40,9 @@ helm upgrade --install pgadmin ./postgres/pgadmin \
 helm upgrade --install kafka-operator strimzi/strimzi-kafka-operator \
 --create-namespace --namespace kafka
 
+echo "Waiting 30 seconds for Kafka CRDs to be registered..."
+sleep 30
+
 #Install kafka and postgresql connector
 helm upgrade --install kafka-cluster ./kafka/kafka-cluster \
 --create-namespace --namespace kafka \
@@ -67,7 +70,8 @@ helm upgrade --install elasticsearch-cluster ./elasticsearch/elasticsearch-clust
 #Install loki
 helm upgrade --install loki grafana/loki \
  --create-namespace --namespace observability \
- -f ./observability/loki.values.yaml
+ -f ./observability/loki.values.yaml \
+ --set loki.useTestSchema=true
 
 #Install tempo
 helm upgrade --install tempo grafana/tempo \
@@ -88,6 +92,9 @@ helm upgrade --install cert-manager jetstack/cert-manager \
 helm upgrade --install opentelemetry-operator open-telemetry/opentelemetry-operator \
 --create-namespace --namespace observability
 
+echo "Waiting 30 seconds for OpenTelemetry webhooks to be ready..."
+sleep 30
+
 #Install opentelemetry-collector
 helm upgrade --install opentelemetry-collector ./observability/opentelemetry \
 --create-namespace --namespace observability
@@ -104,6 +111,7 @@ postgresql_password="$POSTGRESQL_PASSWORD" yq -i '.grafana."grafana.ini".databas
 helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
  --create-namespace --namespace observability \
 -f ./observability/prometheus.values.yaml \
+--set grafana.assertNoLeakedSecrets=false
 
 #Install grafana operator
 helm upgrade --install grafana-operator oci://ghcr.io/grafana-operator/helm-charts/grafana-operator \
