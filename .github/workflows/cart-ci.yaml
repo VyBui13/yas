@@ -80,6 +80,11 @@ jobs:
           title: "Cart Coverage Report"
           update-comment: true
 
+      - name: Get short SHA
+        if: ${{ github.ref == 'refs/heads/feature/test-cd-cart' }}
+        id: slug
+        run: echo "sha=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
+
 # --- PHẦN CD BẮT ĐẦU TỪ ĐÂY ---
       - name: Log in to Docker Hub
         if: ${{ github.ref == 'refs/heads/feature/test-cd-cart' }}
@@ -94,8 +99,8 @@ jobs:
         with:
           context: ./cart
           push: true
-          # Đã chuyển sang dùng DOCKER_USERNAME
-          tags: ${{ secrets.DOCKER_USERNAME }}/yas-cart:test
+          # Đã chuyển sang dùng DOCKER_USERNAME và tag commit SHA
+          tags: ${{ secrets.DOCKER_USERNAME }}/yas-cart:${{ steps.slug.outputs.sha }}
 
       - name: Setup Kubeconfig
         if: ${{ github.ref == 'refs/heads/feature/test-cd-cart' }}
@@ -116,8 +121,8 @@ jobs:
           # 3. Update dependency cho Cart
           helm dependency update ./k8s/charts/cart
           
-          # 4. Deploy Cart service
+          # 4. Deploy Cart service với tag commit SHA
           helm upgrade --install cart ./k8s/charts/cart \
             --namespace yas \
-            --set image.repository=${{ secrets.DOCKER_USERNAME }}/yas-cart \
-            --set image.tag=test
+            --set backend.image.repository=${{ secrets.DOCKER_USERNAME }}/yas-cart \
+            --set backend.image.tag=${{ steps.slug.outputs.sha }}
