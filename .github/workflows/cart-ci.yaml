@@ -2,8 +2,8 @@ name: cart service ci
 
 on:
   push:
-    # Đã thêm nhánh test vào danh sách kích hoạt luồng push
-    branches: ["main", "feature/test-cd-cart"]
+    # Kích hoạt trên mọi nhánh để tự động build và push ảnh với tag commit SHA lên Docker Hub (Yêu cầu 3)
+    branches: ["**"]
     paths:
       - "cart/**"
       - ".github/workflows/actions/action.yaml"
@@ -22,8 +22,8 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     env:
-      # Cập nhật thêm nhánh test vào biến môi trường để đảm bảo các bước scan code vẫn chạy bình thường
-      FROM_ORIGINAL_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/test-cd-cart' }}
+      # Cập nhật để hỗ trợ quét kiểm tra code trên mọi nhánh thuộc repo chính
+      FROM_ORIGINAL_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.repository == 'VyBui13/yas' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -80,21 +80,38 @@ jobs:
           title: "Cart Coverage Report"
           update-comment: true
 
+      # --- PHẦN CD MÔI TRƯỜNG MAIN (ĐẨY LÊN GHCR) ---
+      - name: Log in to the Container registry
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker images (GHCR)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ./cart
+          push: true
+          tags: ghcr.io/vybui13/yas-cart:latest
+
+      # --- PHẦN CD MÔI TRƯỜNG TEST (ĐẨY LÊN DOCKER HUB & DEPLOY K3S) ---
       - name: Get short SHA
-        if: ${{ github.ref == 'refs/heads/feature/test-cd-cart' }}
+        if: ${{ github.ref != 'refs/heads/main' }}
         id: slug
         run: echo "sha=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
 
-# --- PHẦN CD BẮT ĐẦU TỪ ĐÂY ---
       - name: Log in to Docker Hub
-        if: ${{ github.ref == 'refs/heads/feature/test-cd-cart' }}
+        if: ${{ github.ref != 'refs/heads/main' }}
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker images
-        if: ${{ github.ref == 'refs/heads/feature/test-cd-cart' }}
+      - name: Build and push Docker images (Docker Hub)
+        if: ${{ github.ref != 'refs/heads/main' }}
         uses: docker/build-push-action@v6
         with:
           context: ./cart
