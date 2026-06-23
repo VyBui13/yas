@@ -12,5 +12,5 @@ spec:
   - from:
     - source:
         principals: 
-        - "cluster.local/ns/yas/sa/storefront-bff"
+        - "cluster.local/ns/yas/sa/product"
         - "cluster.local/ns/yas/sa/backoffice-bff"
