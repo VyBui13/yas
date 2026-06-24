@@ -22,15 +22,13 @@ jobs:
 Build:
 runs-on: ubuntu-latest
 env:
-# Cập nhật để hỗ trợ quét kiểm tra code trên mọi nhánh thuộc repo chính
 FROM_ORIGINAL_REPOSITORY: "${{ github.event.pull_request.head.repo.full_name == github.repository || github.repository == 'VyBui13/yas' }}"
-
-
 steps:
-  - uses: actions/checkout@v4
-    with:
-      fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+- uses: actions/checkout@v4
+with:
+fetch-depth: 0
 
+```
   - uses: ./.github/workflows/actions
 
   - name: Run Maven Checkstyle
@@ -90,3 +88,4 @@ steps:
       context: ./backoffice-bff
       push: true
       tags: ${{ secrets.DOCKER_USERNAME }}/yas-backoffice-bff:${{ steps.slug.outputs.sha }}
+```
