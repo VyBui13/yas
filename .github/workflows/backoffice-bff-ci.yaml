@@ -23,7 +23,7 @@ Build:
 runs-on: ubuntu-latest
 env:
 # Cập nhật để hỗ trợ quét kiểm tra code trên mọi nhánh thuộc repo chính
-FROM_ORIGINAL_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name == github.repository || github.repository == 'VyBui13/yas' }}
+FROM_ORIGINAL_REPOSITORY: "${{ github.event.pull_request.head.repo.full_name == github.repository || github.repository == 'VyBui13/yas' }}"
 
 ```
 steps:
