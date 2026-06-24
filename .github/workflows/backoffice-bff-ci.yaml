@@ -90,4 +90,3 @@ steps:
       context: ./backoffice-bff
       push: true
       tags: ${{ secrets.DOCKER_USERNAME }}/yas-backoffice-bff:${{ steps.slug.outputs.sha }}
-```
