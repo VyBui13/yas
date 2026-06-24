@@ -2,7 +2,7 @@ name: location service ci
 
 on:
   push:
-    # Kích hoạt trên mọi nhánh để tự động build và push ảnh với tag commit SHA lên Docker Hub
+    # Kích hoạt trên mọi nhánh để build và push image với tag commit SHA lên Docker Hub
     branches: ["**"]
     paths:
       - "location/**"

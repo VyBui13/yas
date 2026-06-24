@@ -2,6 +2,7 @@ name: backoffice-bff service ci
 
 on:
   push:
+  # Kích hoạt trên mọi nhánh để build và push image với tag commit SHA lên Docker Hub
     branches: ['**']
     paths:
       - 'backoffice-bff/**'
