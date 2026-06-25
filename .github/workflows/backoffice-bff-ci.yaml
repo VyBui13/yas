@@ -2,14 +2,14 @@ name: backoffice-bff service ci
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
       - "backoffice-bff/**"
       - ".github/workflows/actions/action.yaml"
       - ".github/workflows/backoffice-bff-ci.yaml"
       - "pom.xml"
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
       - "backoffice-bff/**"
       - ".github/workflows/actions/action.yaml"
@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - uses: ./.github/workflows/actions
       - name: Run Maven Checkstyle
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
@@ -34,7 +34,7 @@ jobs:
         if: ${{ env.FROM_ORIGINAL_REPOSITORY == 'true' }}
         uses: jwgmeligmeyling/checkstyle-github-action@master
         with:
-          path: '**/backoffice-bff-checkstyle-result.xml'
+          path: "**/backoffice-bff-checkstyle-result.xml"
       - name: Run Maven Verify
         run: mvn clean verify -f backoffice-bff
       - name: Analyze with sonar cloud
@@ -56,5 +56,4 @@ jobs:
         with:
           context: ./backoffice-bff
           push: true
-          tags: ghcr.io/nashtech-garage/yas-backoffice-bff:latest
-
+          tags: ghcr.io/vybui13/yas-backoffice-bff:latest
