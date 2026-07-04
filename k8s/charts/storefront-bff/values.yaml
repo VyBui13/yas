@@ -4,6 +4,11 @@ backend:
     tag: latest
 
   nameOverride: storefront-bff
+  hostAliases:
+    - ip: 10.43.48.53
+      hostnames:
+        - identity.yas.local.com
+
   fullnameOverride: storefront-bff
 
   deployment:

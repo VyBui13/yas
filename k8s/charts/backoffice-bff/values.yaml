@@ -4,6 +4,11 @@ backend:
     tag: latest
 
   nameOverride: backoffice-bff
+  hostAliases:
+    - ip: 10.43.48.53
+      hostnames:
+        - identity.yas.local.com
+
   fullnameOverride: backoffice-bff
   deployment:
     annotations:
