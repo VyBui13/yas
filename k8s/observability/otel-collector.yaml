@@ -23,6 +23,10 @@ spec:
         verbosity: basic
       prometheus:
         endpoint: 0.0.0.0:8889
+      otlp/jaeger:
+        endpoint: jaeger-collector.istio-system.svc.cluster.local:4317
+        tls:
+          insecure: true
 
     service:
       telemetry:
@@ -32,7 +36,7 @@ spec:
         traces:
           receivers: [otlp]
           processors: [batch]
-          exporters: [debug]
+          exporters: [debug, otlp/jaeger]
         metrics:
           receivers: [otlp]
           processors: [batch]
