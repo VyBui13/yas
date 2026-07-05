@@ -1,4 +1,6 @@
 backend:
+  podAnnotations:
+    instrumentation.opentelemetry.io/inject-java: "observability/yas-java"
   image:
     repository: ghcr.io/vybui13/yas-product
     tag: latest
