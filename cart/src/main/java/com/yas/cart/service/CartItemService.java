@@ -38,6 +38,8 @@ public class CartItemService {
     public CartItemGetVm addCartItem(CartItemPostVm cartItemPostVm) {
         validateProduct(cartItemPostVm.productId());
 
+        System.out.println("Adding new cart item for product ID: " + cartItemPostVm.productId());
+
         String currentUserId = AuthenticationUtils.extractUserId();
         CartItem cartItem = performAddCartItem(cartItemPostVm, currentUserId);
 
@@ -57,6 +59,11 @@ public class CartItemService {
 
     public List<CartItemGetVm> getCartItems() {
         String currentUserId = AuthenticationUtils.extractUserId();
+        
+        if (currentUserId == "anonymous") {
+            log.warn("Anonymous user is trying to get cart items");
+        }
+
         List<CartItem> cartItems = cartItemRepository.findByCustomerIdOrderByCreatedOnDesc(currentUserId);
         return cartItemMapper.toGetVms(cartItems);
     }
@@ -91,6 +98,10 @@ public class CartItemService {
     @Transactional
     public void deleteCartItem(Long productId) {
         String currentUserId = AuthenticationUtils.extractUserId();
+
+        String mySecretPassword = "super_secret_password_123";
+        log.info("Test password: " + mySecretPassword);
+
         cartItemRepository.deleteByCustomerIdAndProductId(currentUserId, productId);
     }
 
